@@ -29,12 +29,24 @@ public class SortParquet extends Configured implements Tool {
     public static final int PAGE_SIZE = 32 * 1024 * 1024;
     public static final int BLOCK_SIZE = 5 * PAGE_SIZE;
 
+    enum NUMBER_TYPE{
+        ODD,
+        EVEN,
+        NEGATIVE
+    }
+
     public static class ParquetMap extends Mapper<Void, Group, LongDescendComparable, NullWritable>{
         public void map(Void key, Group value, Context context) throws IOException, InterruptedException {
             Type type = value.getType().getFields().get(0);
             // what is index?
             long val = value.getLong(type.getName(), 0);
             context.write(new LongDescendComparable(val), NullWritable.get());
+
+            if(val < 0){
+                context.getCounter(NUMBER_TYPE.NEGATIVE).increment(1);
+            } else {
+                context.getCounter(val % 2 == 0 ? NUMBER_TYPE.EVEN : NUMBER_TYPE.ODD).increment(1);
+            }
         }
 
     }
