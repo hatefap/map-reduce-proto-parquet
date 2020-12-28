@@ -1,0 +1,7 @@
+.idea
+minput
+output
+target
+*.jar
+*.class
+

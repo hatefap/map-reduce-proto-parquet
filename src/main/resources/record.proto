@@ -1,0 +1,5 @@
+option java_outer_classname = "SahabRecords";
+option java_package="generatedproto";
+message Record {
+  required int64 number = 1;
+}
